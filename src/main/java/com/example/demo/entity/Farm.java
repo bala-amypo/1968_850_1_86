@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "farms")
 public class Farm {
 
     @Id
@@ -19,6 +20,7 @@ public class Farm {
 
     public Farm() {}
 
+    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -36,4 +38,22 @@ public class Farm {
 
     public User getOwner() { return owner; }
     public void setOwner(User owner) { this.owner = owner; }
+
+    // ===== BUILDER =====
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final Farm f = new Farm();
+
+        public Builder id(Long id) { f.setId(id); return this; }
+        public Builder name(String name) { f.setName(name); return this; }
+        public Builder soilPH(Double soilPH) { f.setSoilPH(soilPH); return this; }
+        public Builder waterLevel(Double waterLevel) { f.setWaterLevel(waterLevel); return this; }
+        public Builder season(String season) { f.setSeason(season); return this; }
+        public Builder owner(User owner) { f.setOwner(owner); return this; }
+
+        public Farm build() { return f; }
+    }
 }
