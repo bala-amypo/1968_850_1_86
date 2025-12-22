@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.util.List;
+import com.example.demo.entity.Farm;   // ✅ REQUIRED IMPORT
 
 @Entity
 @Table(name = "users")
@@ -27,7 +28,6 @@ public class User {
 
     public User() {}
 
-    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -42,4 +42,7 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public List<Farm> getFarms() { return farms; }
+    public void setFarms(List<Farm> farms) { this.farms = farms; }
 }
