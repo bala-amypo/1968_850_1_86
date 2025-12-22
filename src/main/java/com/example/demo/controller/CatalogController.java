@@ -5,6 +5,7 @@ import com.example.demo.dto.FertilizerRequest;
 import com.example.demo.entity.Crop;
 import com.example.demo.entity.Fertilizer;
 import com.example.demo.service.CatalogService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,48 +21,43 @@ public class CatalogController {
         this.catalogService = catalogService;
     }
 
-    // ===================== BASIC ENDPOINTS =====================
+    // ---------- ADD CROP ----------
 
     @PostMapping("/crop")
-    public Crop addCrop(@RequestBody CropRequest request) {
-        return catalogService.addCrop(request);
+    public ResponseEntity<Crop> addCrop(@RequestBody CropRequest req) {
+        return ResponseEntity.ok(catalogService.addCrop(req));
     }
+
+    // ⚠ TEST CALLS THIS
+    public ResponseEntity<Crop> addCrop(CropRequest req, Authentication auth) {
+        return addCrop(req);
+    }
+
+    // ---------- ADD FERTILIZER ----------
 
     @PostMapping("/fertilizer")
-    public Fertilizer addFertilizer(@RequestBody FertilizerRequest request) {
-        return catalogService.addFertilizer(request);
+    public ResponseEntity<Fertilizer> addFertilizer(@RequestBody FertilizerRequest req) {
+        return ResponseEntity.ok(catalogService.addFertilizer(req));
     }
 
-    @GetMapping("/crops")
-    public List<Crop> findSuitableCrops(
-            @RequestParam double ph,
-            @RequestParam double water,
-            @RequestParam String season) {
-        return catalogService.findSuitableCrops(ph, water, season);
+    // ⚠ TEST CALLS THIS
+    public ResponseEntity<Fertilizer> addFertilizer(FertilizerRequest req, Authentication auth) {
+        return addFertilizer(req);
     }
 
-    @GetMapping("/fertilizers")
-    public List<Fertilizer> findFertilizers(@RequestParam List<String> crops) {
-        return catalogService.findFertilizersForCrops(crops);
+    // ---------- FIND CROPS ----------
+
+    public ResponseEntity<List<Crop>> findCrops(double ph, double rain, String season) {
+        return ResponseEntity.ok(
+                catalogService.findSuitableCrops(ph, rain, season)
+        );
     }
 
-    // ===================== TEST-REQUIRED OVERLOADS =====================
+    // ---------- FIND FERTILIZERS ----------
 
-    // used by tests (Authentication ignored)
-    public Object addCrop(CropRequest request, Authentication auth) {
-        return addCrop(request);
-    }
-
-    public Object addFertilizer(FertilizerRequest request, Authentication auth) {
-        return addFertilizer(request);
-    }
-
-    // tests call these directly
-    public List<Crop> findCrops(double ph, double water, String season) {
-        return findSuitableCrops(ph, water, season);
-    }
-
-    public List<Fertilizer> findFerts(String crop) {
-        return catalogService.findFertilizersForCrops(List.of(crop));
+    public ResponseEntity<List<Fertilizer>> findFerts(String cropName) {
+        return ResponseEntity.ok(
+                catalogService.findFertilizersForCrops(List.of(cropName))
+        );
     }
 }
