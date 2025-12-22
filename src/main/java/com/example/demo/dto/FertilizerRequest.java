@@ -1,29 +1,25 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.Fertilizer;
-
 public class FertilizerRequest {
 
     private String name;
-    private String npkRatio;
-    private String recommendedForCrops;
+    private String cropName;
+    private String description;
 
     public FertilizerRequest() {}
 
-    public FertilizerRequest(String name, String npk, String crops) {
+    public FertilizerRequest(String name, String cropName, String description) {
         this.name = name;
-        this.npkRatio = npk;
-        this.recommendedForCrops = crops;
-    }
-
-    // 🔥 fixes incompatible types
-    public FertilizerRequest(Fertilizer f) {
-        this.name = f.getName();
-        this.npkRatio = f.getNpkRatio();
-        this.recommendedForCrops = f.getRecommendedForCrops();
+        this.cropName = cropName;
+        this.description = description;
     }
 
     public String getName() { return name; }
-    public String getNpkRatio() { return npkRatio; }
-    public String getRecommendedForCrops() { return recommendedForCrops; }
+    public void setName(String name) { this.name = name; }
+
+    public String getCropName() { return cropName; }
+    public void setCropName(String cropName) { this.cropName = cropName; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }

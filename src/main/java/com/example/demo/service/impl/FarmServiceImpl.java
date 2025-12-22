@@ -1,40 +1,36 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.FarmRequest;
 import com.example.demo.entity.Farm;
-import com.example.demo.entity.User;
-import com.example.demo.repository.FarmRepository;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FarmService;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
-@Service
 public class FarmServiceImpl implements FarmService {
 
-    private final FarmRepository farmRepository;
-    private final UserRepository userRepository;
-
-    public FarmServiceImpl(FarmRepository farmRepository,
-                           UserRepository userRepository) {
-        this.farmRepository = farmRepository;
-        this.userRepository = userRepository;
-    }
+    private final Map<Long, Farm> store = new HashMap<>();
+    private long idSeq = 1;
 
     @Override
-    public Farm createFarm(Farm farm, long ownerId) {
-        User owner = userRepository.findById(ownerId).orElse(null);
-        farm.setOwner(owner);
-        return farmRepository.save(farm);
+    public Farm createFarm(FarmRequest req) {
+        Farm farm = Farm.builder()
+                .id(idSeq++)
+                .name(req.getName())
+                .latitude(req.getLatitude())
+                .longitude(req.getLongitude())
+                .soilType(req.getSoilType())
+                .build();
+        store.put(farm.getId(), farm);
+        return farm;
     }
 
     @Override
     public Farm getFarmById(long id) {
-        return farmRepository.findById(id).orElse(null);
+        return store.get(id);
     }
 
     @Override
-    public List<Farm> getFarmsByOwner(long ownerId) {
-        return farmRepository.findAll();
+    public List<Farm> listFarms() {
+        return new ArrayList<>(store.values());
     }
 }

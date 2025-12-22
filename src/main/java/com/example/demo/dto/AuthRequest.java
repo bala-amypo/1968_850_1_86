@@ -7,7 +7,6 @@ public class AuthRequest {
 
     public AuthRequest() {}
 
-    // ✅ REQUIRED by tests
     public AuthRequest(String email, String password) {
         this.email = email;
         this.password = password;

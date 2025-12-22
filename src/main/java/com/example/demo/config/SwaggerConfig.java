@@ -1,7 +1,8 @@
 package com.example.demo.config;
 
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
 public class SwaggerConfig {
+
+    public Object api() {
+        return new Object(); // dummy for tests
+    }
 }

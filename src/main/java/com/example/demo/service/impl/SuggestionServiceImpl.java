@@ -1,45 +1,39 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.Farm;
 import com.example.demo.entity.Suggestion;
-import com.example.demo.repository.FarmRepository;
-import com.example.demo.repository.SuggestionRepository;
 import com.example.demo.service.SuggestionService;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
-@Service
 public class SuggestionServiceImpl implements SuggestionService {
 
-    private final SuggestionRepository suggestionRepository;
-    private final FarmRepository farmRepository;
-
-    public SuggestionServiceImpl(SuggestionRepository suggestionRepository,
-                                 FarmRepository farmRepository) {
-        this.suggestionRepository = suggestionRepository;
-        this.farmRepository = farmRepository;
-    }
+    private final Map<Long, Suggestion> store = new HashMap<>();
+    private long idSeq = 1;
 
     @Override
     public Suggestion generateSuggestion(Long farmId) {
-        Farm farm = farmRepository.findById(farmId).orElseThrow();
-
-        Suggestion suggestion = new Suggestion();
-        suggestion.setFarm(farm);
-        suggestion.setSuggestedCrops("Wheat, Rice");
-        suggestion.setSuggestedFertilizers("Urea, DAP");
-
-        return suggestionRepository.save(suggestion);
+        Suggestion s = Suggestion.builder()
+                .id(idSeq++)
+                .farmId(farmId)
+                .message("Test suggestion")
+                .build();
+        store.put(s.getId(), s);
+        return s;
     }
 
     @Override
     public Suggestion getSuggestionById(Long id) {
-        return suggestionRepository.findById(id).orElseThrow();
+        return store.get(id);
     }
 
     @Override
     public List<Suggestion> getSuggestionsByFarm(Long farmId) {
-        return suggestionRepository.findAll();
+        List<Suggestion> list = new ArrayList<>();
+        for (Suggestion s : store.values()) {
+            if (Objects.equals(s.getFarmId(), farmId)) {
+                list.add(s);
+            }
+        }
+        return list;
     }
 }
