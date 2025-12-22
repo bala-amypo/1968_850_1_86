@@ -3,7 +3,9 @@ package com.example.demo.controller;
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
+import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,23 +13,26 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthController(UserService userService) {
+    // ✅ REQUIRED by tests
+    public AuthController(UserService userService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
-        return userService.register(user);
+        return ResponseEntity.ok(userService.register(user));
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody AuthRequest request) {
-        // basic login (JWT can be added later)
-        return userService.findByEmail(request.getEmail());
+    public ResponseEntity<User> login(@RequestBody AuthRequest request) {
+        User user = userService.findByEmail(request.getEmail());
+        return ResponseEntity.ok(user);
     }
 }

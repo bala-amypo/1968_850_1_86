@@ -5,19 +5,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-    // Dummy token generation (no external libs)
-    public String generateToken(String email) {
-        return "DUMMY-TOKEN-" + email;
+    // token format: userId|email|role
+    public String createToken(long userId, String email, String role) {
+        return userId + "|" + email + "|" + role;
     }
 
-    // Dummy email extraction
-    public String getEmailFromToken(String token) {
-        if (token == null) return null;
-        return token.replace("DUMMY-TOKEN-", "");
+    public Long getUserId(String token) {
+        return Long.parseLong(token.split("\\|")[0]);
     }
 
-    // Always valid (for assignment/testing)
-    public boolean validateToken(String token) {
-        return token != null && token.startsWith("DUMMY-TOKEN-");
+    public String getEmail(String token) {
+        return token.split("\\|")[1];
+    }
+
+    public String getRole(String token) {
+        return token.split("\\|")[2];
     }
 }
