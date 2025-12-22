@@ -1,36 +1,34 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.FarmRequest;
 import com.example.demo.entity.Farm;
+import com.example.demo.repository.FarmRepository;
 import com.example.demo.service.FarmService;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
+@Service
 public class FarmServiceImpl implements FarmService {
 
-    private final Map<Long, Farm> store = new HashMap<>();
-    private long idSeq = 1;
+    private final FarmRepository repo;
+
+    public FarmServiceImpl(FarmRepository repo) {
+        this.repo = repo;
+    }
 
     @Override
-    public Farm createFarm(FarmRequest req) {
-        Farm farm = Farm.builder()
-                .id(idSeq++)
-                .name(req.getName())
-                .latitude(req.getLatitude())
-                .longitude(req.getLongitude())
-                .soilType(req.getSoilType())
-                .build();
-        store.put(farm.getId(), farm);
-        return farm;
+    public Farm createFarm(Farm farm, long ownerId) {
+        farm.setOwnerId(ownerId);
+        return repo.save(farm);
     }
 
     @Override
     public Farm getFarmById(long id) {
-        return store.get(id);
+        return repo.findById(id).orElse(null);
     }
 
     @Override
-    public List<Farm> listFarms() {
-        return new ArrayList<>(store.values());
+    public List<Farm> getFarmsByOwner(long ownerId) {
+        return repo.findByOwnerId(ownerId);
     }
 }

@@ -3,7 +3,6 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "farms")
 public class Farm {
 
     @Id
@@ -11,49 +10,46 @@ public class Farm {
     private Long id;
 
     private String name;
-    private Double soilPH;
-    private Double waterLevel;
-    private String season;
+    private double latitude;
+    private double longitude;
+    private String soilType;
 
-    @ManyToOne
-    private User owner;
+    private Long ownerId;
 
-    public Farm() {}
-
-    // getters & setters
+    // ===== getters & setters =====
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public Double getSoilPH() { return soilPH; }
-    public void setSoilPH(Double soilPH) { this.soilPH = soilPH; }
+    public double getLatitude() { return latitude; }
+    public void setLatitude(double latitude) { this.latitude = latitude; }
 
-    public Double getWaterLevel() { return waterLevel; }
-    public void setWaterLevel(Double waterLevel) { this.waterLevel = waterLevel; }
+    public double getLongitude() { return longitude; }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 
-    public String getSeason() { return season; }
-    public void setSeason(String season) { this.season = season; }
+    public String getSoilType() { return soilType; }
+    public void setSoilType(String soilType) { this.soilType = soilType; }
 
-    public User getOwner() { return owner; }
-    public void setOwner(User owner) { this.owner = owner; }
+    public Long getOwnerId() { return ownerId; }
+    public void setOwnerId(Long ownerId) { this.ownerId = ownerId; }
 
-    // ===== BUILDER =====
+    // ===== Builder =====
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder {
-        private final Farm f = new Farm();
+        private final Farm u = new Farm();
 
-        public Builder id(Long id) { f.setId(id); return this; }
-        public Builder name(String name) { f.setName(name); return this; }
-        public Builder soilPH(Double soilPH) { f.setSoilPH(soilPH); return this; }
-        public Builder waterLevel(Double waterLevel) { f.setWaterLevel(waterLevel); return this; }
-        public Builder season(String season) { f.setSeason(season); return this; }
-        public Builder owner(User owner) { f.setOwner(owner); return this; }
+        public Builder id(Long id) { u.setId(id); return this; }
+        public Builder name(String name) { u.setName(name); return this; }
+        public Builder latitude(double latitude) { u.setLatitude(latitude); return this; }
+        public Builder longitude(double longitude) { u.setLongitude(longitude); return this; }
+        public Builder soilType(String soilType) { u.setSoilType(soilType); return this; }
+        public Builder ownerId(Long ownerId) { u.setOwnerId(ownerId); return this; }
 
-        public Farm build() { return f; }
+        public Farm build() { return u; }
     }
 }
