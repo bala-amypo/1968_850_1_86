@@ -1,12 +1,11 @@
 package com.example.demo.util;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 public class ValidationUtil {
-    private static final List<String> VALID_SEASONS = Arrays.asList("Kharif", "Rabi", "Summer");
-    
+    private static final Set<String> VALID_SEASONS = Set.of("Kharif", "Rabi", "Summer");
+
     public static boolean validSeason(String season) {
-        return season != null && VALID_SEASONS.contains(season);
+        return VALID_SEASONS.contains(season);
     }
 }
