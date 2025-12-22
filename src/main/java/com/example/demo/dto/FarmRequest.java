@@ -23,6 +23,4 @@ public class FarmRequest {
 
     @NotBlank
     private String season;
-    
-    // No manual getters/setters needed with @Data!
 }
