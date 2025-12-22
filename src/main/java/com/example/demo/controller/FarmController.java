@@ -27,7 +27,7 @@ public class FarmController {
     @PostMapping
     @Operation(summary = "Create farm")
     public ResponseEntity<?> createFarm(@RequestBody FarmRequest req, Authentication auth) {
-        Long userId = Long.parseLong(auth.getName());
+        Long userId = (Long) auth.getPrincipal();
         
         Farm farm = Farm.builder()
                 .name(req.getName())
@@ -43,7 +43,7 @@ public class FarmController {
     @GetMapping
     @Operation(summary = "List user farms")
     public ResponseEntity<?> listFarms(Authentication auth) {
-        Long userId = Long.parseLong(auth.getName());
+        Long userId = (Long) auth.getPrincipal();
         List<Farm> farms = farmService.getFarmsByOwner(userId);
         return ResponseEntity.ok(farms);
     }
