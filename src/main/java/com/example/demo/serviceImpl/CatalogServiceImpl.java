@@ -8,7 +8,6 @@ import com.example.demo.service.CatalogService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CatalogServiceImpl implements CatalogService {
@@ -22,25 +21,17 @@ public class CatalogServiceImpl implements CatalogService {
     }
     
     @Override
-    public Crop addCrop(Crop crop) {
-        return cropRepository.save(crop);
-    }
-    
-    @Override
-    public Fertilizer addFertilizer(Fertilizer fertilizer) {
-        return fertilizerRepository.save(fertilizer);
-    }
-    
-    @Override
-    public List<Crop> findSuitableCrops(Double ph, Double waterLevel, String season) {
-        return cropRepository.findSuitableCrops(ph, waterLevel, season);
+    public List<Crop> findSuitableCrops(Double soilPH, Double waterLevel, String season) {
+        return cropRepository.findSuitableCrops(soilPH, waterLevel, season);
     }
     
     @Override
     public List<Fertilizer> findFertilizersForCrops(List<String> cropNames) {
-        return cropNames.stream()
-                .flatMap(cropName -> fertilizerRepository.findByCropName(cropName).stream())
-                .distinct()
-                .collect(Collectors.toList());
+        return fertilizerRepository.findByRecommendedForCropsContaining(String.join(",", cropNames));
+    }
+    
+    @Override
+    public Crop addCrop(Crop crop) {
+        return cropRepository.save(crop);
     }
 }
