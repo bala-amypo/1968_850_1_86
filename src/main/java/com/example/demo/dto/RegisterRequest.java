@@ -8,7 +8,6 @@ public class RegisterRequest {
 
     public RegisterRequest() {}
 
-    // ✅ REQUIRED by tests
     public RegisterRequest(String name, String email, String password) {
         this.name = name;
         this.email = email;

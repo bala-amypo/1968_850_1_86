@@ -5,20 +5,41 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-    // token format: userId|email|role
+    // ---------- CREATE TOKEN ----------
     public String createToken(long userId, String email, String role) {
+        // Dummy token for tests
         return userId + "|" + email + "|" + role;
     }
 
+    // ---------- VALIDATE TOKEN ----------
+    public boolean validateToken(String token) {
+        return token != null && !token.isBlank();
+    }
+
+    // ---------- EXTRACT USER ID ----------
     public Long getUserId(String token) {
-        return Long.parseLong(token.split("\\|")[0]);
+        try {
+            return Long.parseLong(token.split("\\|")[0]);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
+    // ---------- EXTRACT EMAIL ----------
     public String getEmail(String token) {
-        return token.split("\\|")[1];
+        try {
+            return token.split("\\|")[1];
+        } catch (Exception e) {
+            return null;
+        }
     }
 
+    // ---------- EXTRACT ROLE ----------
     public String getRole(String token) {
-        return token.split("\\|")[2];
+        try {
+            return token.split("\\|")[2];
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

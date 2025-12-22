@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface CatalogService {
 
-    Crop addCrop(CropRequest request);
+    Crop addCrop(CropRequest req);
 
-    Fertilizer addFertilizer(FertilizerRequest request);
+    Fertilizer addFertilizer(FertilizerRequest req);
 
-    List<Crop> findSuitableCrops(Double ph, Double water, String season);
+    List<Crop> findSuitableCrops(Double ph, Double rain, String season);
 
     List<Fertilizer> findFertilizersForCrops(List<String> crops);
 }
