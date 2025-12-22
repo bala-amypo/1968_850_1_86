@@ -2,7 +2,6 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.util.List;
-import com.example.demo.entity.Farm;   // ✅ REQUIRED IMPORT
 
 @Entity
 @Table(name = "users")
@@ -12,15 +11,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
-
     private String role = "USER";
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
