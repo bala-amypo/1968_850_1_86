@@ -1,9 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.exception.BadRequestException;
-
-import javax.persistence.*;
-import java.util.regex.Pattern;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "fertilizers")
@@ -16,8 +13,6 @@ public class Fertilizer {
     private String npkRatio;
     private String recommendedForCrops;
     
-    private static final Pattern NPK_PATTERN = Pattern.compile("^\\d+-\\d+-\\d+$");
-    
     public Fertilizer() {}
     
     public Fertilizer(Long id, String name, String npkRatio, String recommendedForCrops) {
@@ -29,14 +24,6 @@ public class Fertilizer {
     
     public static FertilizerBuilder builder() {
         return new FertilizerBuilder();
-    }
-    
-    @PrePersist
-    @PreUpdate
-    private void validate() {
-        if (npkRatio != null && !NPK_PATTERN.matcher(npkRatio).matches()) {
-            throw new BadRequestException("NPK");
-        }
     }
     
     public Long getId() { return id; }

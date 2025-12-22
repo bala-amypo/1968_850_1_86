@@ -1,9 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.util.ValidationUtil;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "crops")
@@ -31,17 +28,6 @@ public class Crop {
     
     public static CropBuilder builder() {
         return new CropBuilder();
-    }
-    
-    @PrePersist
-    @PreUpdate
-    private void validate() {
-        if (suitablePHMin != null && suitablePHMax != null && suitablePHMin > suitablePHMax) {
-            throw new BadRequestException("PH min");
-        }
-        if (season != null && !ValidationUtil.validSeason(season)) {
-            throw new BadRequestException("Invalid season");
-        }
     }
     
     public Long getId() { return id; }
