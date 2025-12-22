@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
