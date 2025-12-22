@@ -1,57 +1,36 @@
-package com.example.demo.controller;
+package com.example.demo.dto;
 
-import com.example.demo.dto.FarmRequest;
-import com.example.demo.entity.Farm;
-import com.example.demo.service.FarmService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class FarmRequest {
+    @NotBlank
+    private String name;
 
-@RestController
-@RequestMapping("/farms")
-@Tag(name = "Farm Management")
-@SecurityRequirement(name = "bearer-key")
-public class FarmController {
-    
-    private final FarmService farmService;
-    
-    public FarmController(FarmService farmService) {
-        this.farmService = farmService;
-    }
-    
-    @PostMapping
-    @Operation(summary = "Create farm")
-    public ResponseEntity<?> createFarm(@RequestBody FarmRequest req, Authentication auth) {
-        Long userId = (Long) auth.getPrincipal();
-        
-        Farm farm = Farm.builder()
-                .name(req.getName())
-                .soilPH(req.getSoilPH())
-                .waterLevel(req.getWaterLevel())
-                .season(req.getSeason())
-                .build();
-        
-        Farm savedFarm = farmService.createFarm(farm, userId);
-        return ResponseEntity.ok(savedFarm);
-    }
-    
-    @GetMapping
-    @Operation(summary = "List user farms")
-    public ResponseEntity<?> listFarms(Authentication auth) {
-        Long userId = (Long) auth.getPrincipal();
-        List<Farm> farms = farmService.getFarmsByOwner(userId);
-        return ResponseEntity.ok(farms);
-    }
-    
-    @GetMapping("/{farmId}")
-    @Operation(summary = "Get farm details")
-    public ResponseEntity<?> getFarm(@PathVariable Long farmId) {
-        Farm farm = farmService.getFarmById(farmId);
-        return ResponseEntity.ok(farm);
-    }
+    @NotNull
+    private Double soilPH;
+
+    @NotNull
+    private Double waterLevel;
+
+    @NotBlank
+    private String season;
+
+    // Manual getters and setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public Double getSoilPH() { return soilPH; }
+    public void setSoilPH(Double soilPH) { this.soilPH = soilPH; }
+    public Double getWaterLevel() { return waterLevel; }
+    public void setWaterLevel(Double waterLevel) { this.waterLevel = waterLevel; }
+    public String getSeason() { return season; }
+    public void setSeason(String season) { this.season = season; }
 }
