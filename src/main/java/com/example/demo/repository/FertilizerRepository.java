@@ -3,4 +3,10 @@ package com.example.demo.repository;
 import com.example.demo.entity.Fertilizer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FertilizerRepository extends JpaRepository<Fertilizer, Long> {}
+import java.util.List;
+
+public interface FertilizerRepository extends JpaRepository<Fertilizer, Long> {
+
+    // required by tests
+    List<Fertilizer> findByCropName(String cropName);
+}
