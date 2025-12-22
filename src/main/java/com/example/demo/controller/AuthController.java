@@ -22,7 +22,8 @@ public class AuthController {
     }
     
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        // Using Builder pattern for User entity
         User user = User.builder()
                 .email(request.getEmail())
                 .password(request.getPassword())
@@ -30,15 +31,23 @@ public class AuthController {
                 .build();
         
         User savedUser = userService.register(user);
-        String token = jwtTokenProvider.createToken(savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
+        String token = jwtTokenProvider.createToken(
+            savedUser.getId(), 
+            savedUser.getEmail(), 
+            savedUser.getRole()
+        );
         
         return ResponseEntity.ok(new AuthResponse(token));
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         User user = userService.authenticate(request.getEmail(), request.getPassword());
-        String token = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
+        String token = jwtTokenProvider.createToken(
+            user.getId(), 
+            user.getEmail(), 
+            user.getRole()
+        );
         
         return ResponseEntity.ok(new AuthResponse(token));
     }
