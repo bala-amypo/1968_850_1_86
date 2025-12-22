@@ -1,32 +1,25 @@
-package com.example.demo.dto;
-
-public class RegisterRequest {
-    private String name;
-    private String email;
-    private String password;
-
-    public RegisterRequest() {}
-
-    public RegisterRequest(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public static RegisterRequestBuilder builder() { return new RegisterRequestBuilder(); }
-
-    public static class RegisterRequestBuilder {
-        private String name, email, password;
-        public RegisterRequestBuilder name(String name) { this.name = name; return this; }
-        public RegisterRequestBuilder email(String email) { this.email = email; return this; }
-        public RegisterRequestBuilder password(String password) { this.password = password; return this; }
-        public RegisterRequest build() { return new RegisterRequest(name, email, password); }
-    }
-}
+] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /home/coder/Workspace/demo/src/main/java/com/example/demo/controller/AuthController.java:[30,30] cannot find symbol
+  symbol:   method getRole()
+  location: variable request of type com.example.demo.dto.RegisterRequest
+[INFO] 1 error
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  20.081 s
+[INFO] Finished at: 2025-12-22T09:56:32Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project demo2: Compilation failure
+[ERROR] /home/coder/Workspace/demo/src/main/java/com/example/demo/controller/AuthController.java:[30,30] cannot find symbol
+[ERROR]   symbol:   method getRole()
+[ERROR]   location: variable request of type com.example.demo.dto.RegisterRequest
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
