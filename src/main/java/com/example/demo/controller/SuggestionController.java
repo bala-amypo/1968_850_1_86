@@ -28,4 +28,6 @@ public class SuggestionController {
 
     @GetMapping("/farm/{farmId}")
     public List<Suggestion> getSuggestionsByFarm(@PathVariable Long farmId) {
-        return suggestionService.getSugges
+        return suggestionService.getSuggestionsByFarm(farmId);
+    }
+}

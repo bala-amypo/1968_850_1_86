@@ -34,4 +34,11 @@ public class CatalogController {
             @RequestParam Double ph,
             @RequestParam Double water,
             @RequestParam String season) {
-        return cat
+        return catalogService.findSuitableCrops(ph, water, season);
+    }
+
+    @GetMapping("/fertilizers")
+    public List<Fertilizer> findFertilizers(@RequestParam List<String> crops) {
+        return catalogService.findFertilizersForCrops(crops);
+    }
+}
