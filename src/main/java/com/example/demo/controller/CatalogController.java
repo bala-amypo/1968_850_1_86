@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,17 +17,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/catalog")
-@Tag(name = "Catalog Management", description = "Crop and fertilizer catalog endpoints")
+@Tag(name = "Catalog Management")
 @SecurityRequirement(name = "bearer-key")
 public class CatalogController {
+    
     private final CatalogService catalogService;
-
+    
     public CatalogController(CatalogService catalogService) {
         this.catalogService = catalogService;
     }
-
+    
     @PostMapping("/crop")
-    @Operation(summary = "Add a new crop (ADMIN only)")
+    @Operation(summary = "Add crop (Admin only)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addCrop(@RequestBody CropRequest req, Authentication auth) {
         Crop crop = Crop.builder()
                 .name(req.getName())
@@ -39,9 +42,10 @@ public class CatalogController {
         Crop savedCrop = catalogService.addCrop(crop);
         return ResponseEntity.ok(savedCrop);
     }
-
+    
     @PostMapping("/fertilizer")
-    @Operation(summary = "Add a new fertilizer (ADMIN only)")
+    @Operation(summary = "Add fertilizer (Admin only)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addFertilizer(@RequestBody FertilizerRequest req, Authentication auth) {
         Fertilizer fertilizer = Fertilizer.builder()
                 .name(req.getName())
@@ -52,19 +56,18 @@ public class CatalogController {
         Fertilizer savedFertilizer = catalogService.addFertilizer(fertilizer);
         return ResponseEntity.ok(savedFertilizer);
     }
-
+    
     @GetMapping("/crops/suitable")
     @Operation(summary = "Get suitable crops")
-    public ResponseEntity<?> getSuitableCrops(
-            @RequestParam Double ph,
-            @RequestParam Double water,
-            @RequestParam String season) {
+    public ResponseEntity<?> getSuitableCrops(@RequestParam Double ph, 
+                                            @RequestParam Double water, 
+                                            @RequestParam String season) {
         List<Crop> crops = catalogService.findSuitableCrops(ph, water, season);
         return ResponseEntity.ok(crops);
     }
-
+    
     @GetMapping("/fertilizers/by-crop")
-    @Operation(summary = "Get fertilizers by crop name")
+    @Operation(summary = "Get fertilizers by crop")
     public ResponseEntity<?> getFertilizersByCrop(@RequestParam String name) {
         List<Fertilizer> fertilizers = catalogService.findFertilizersForCrops(List.of(name));
         return ResponseEntity.ok(fertilizers);

@@ -12,31 +12,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/suggestions")
-@Tag(name = "Suggestion Management", description = "Crop and fertilizer suggestion endpoints")
+@Tag(name = "Suggestion Management")
 @SecurityRequirement(name = "bearer-key")
 public class SuggestionController {
+    
     private final SuggestionService suggestionService;
-
+    
     public SuggestionController(SuggestionService suggestionService) {
         this.suggestionService = suggestionService;
     }
-
+    
     @PostMapping("/{farmId}")
-    @Operation(summary = "Generate suggestion for a farm")
+    @Operation(summary = "Generate suggestion")
     public ResponseEntity<?> generateSuggestion(@PathVariable Long farmId) {
         Suggestion suggestion = suggestionService.generateSuggestion(farmId);
         return ResponseEntity.ok(suggestion);
     }
-
+    
     @GetMapping("/{suggestionId}")
-    @Operation(summary = "Get a suggestion by ID")
+    @Operation(summary = "Get suggestion")
     public ResponseEntity<?> getSuggestion(@PathVariable Long suggestionId) {
         Suggestion suggestion = suggestionService.getSuggestion(suggestionId);
         return ResponseEntity.ok(suggestion);
     }
-
+    
     @GetMapping("/farm/{farmId}")
-    @Operation(summary = "List suggestions for a farm")
+    @Operation(summary = "List farm suggestions")
     public ResponseEntity<?> getFarmSuggestions(@PathVariable Long farmId) {
         List<Suggestion> suggestions = suggestionService.getSuggestionsByFarm(farmId);
         return ResponseEntity.ok(suggestions);

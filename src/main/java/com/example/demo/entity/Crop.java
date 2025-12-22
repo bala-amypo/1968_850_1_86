@@ -1,7 +1,9 @@
 package com.example.demo.entity;
 
 import com.example.demo.exception.BadRequestException;
-import jakarta.persistence.*;
+import com.example.demo.util.ValidationUtil;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "crops")
@@ -15,9 +17,9 @@ public class Crop {
     private Double suitablePHMax;
     private Double requiredWater;
     private String season;
-
+    
     public Crop() {}
-
+    
     public Crop(Long id, String name, Double suitablePHMin, Double suitablePHMax, Double requiredWater, String season) {
         this.id = id;
         this.name = name;
@@ -27,39 +29,56 @@ public class Crop {
         this.season = season;
     }
     
+    public static CropBuilder builder() {
+        return new CropBuilder();
+    }
+    
     @PrePersist
     @PreUpdate
-    private void validatePHRange() {
+    private void validate() {
         if (suitablePHMin != null && suitablePHMax != null && suitablePHMin > suitablePHMax) {
             throw new BadRequestException("PH min");
         }
+        if (season != null && !ValidationUtil.validSeason(season)) {
+            throw new BadRequestException("Invalid season");
+        }
     }
-
+    
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+    
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    
     public Double getSuitablePHMin() { return suitablePHMin; }
     public void setSuitablePHMin(Double suitablePHMin) { this.suitablePHMin = suitablePHMin; }
+    
     public Double getSuitablePHMax() { return suitablePHMax; }
     public void setSuitablePHMax(Double suitablePHMax) { this.suitablePHMax = suitablePHMax; }
+    
     public Double getRequiredWater() { return requiredWater; }
     public void setRequiredWater(Double requiredWater) { this.requiredWater = requiredWater; }
+    
     public String getSeason() { return season; }
     public void setSeason(String season) { this.season = season; }
-
-    public static CropBuilder builder() { return new CropBuilder(); }
-
+    
     public static class CropBuilder {
         private Long id;
-        private String name, season;
-        private Double suitablePHMin, suitablePHMax, requiredWater;
+        private String name;
+        private Double suitablePHMin;
+        private Double suitablePHMax;
+        private Double requiredWater;
+        private String season;
+        
         public CropBuilder id(Long id) { this.id = id; return this; }
         public CropBuilder name(String name) { this.name = name; return this; }
         public CropBuilder suitablePHMin(Double suitablePHMin) { this.suitablePHMin = suitablePHMin; return this; }
         public CropBuilder suitablePHMax(Double suitablePHMax) { this.suitablePHMax = suitablePHMax; return this; }
         public CropBuilder requiredWater(Double requiredWater) { this.requiredWater = requiredWater; return this; }
         public CropBuilder season(String season) { this.season = season; return this; }
-        public Crop build() { return new Crop(id, name, suitablePHMin, suitablePHMax, requiredWater, season); }
+        
+        public Crop build() {
+            return new Crop(id, name, suitablePHMin, suitablePHMax, requiredWater, season);
+        }
     }
 }
