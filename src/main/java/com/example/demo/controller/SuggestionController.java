@@ -2,12 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Suggestion;
 import com.example.demo.service.SuggestionService;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/suggestions")
 public class SuggestionController {
 
     private final SuggestionService suggestionService;
@@ -16,18 +13,15 @@ public class SuggestionController {
         this.suggestionService = suggestionService;
     }
 
-    @PostMapping("/{farmId}")
-    public Suggestion generateSuggestion(@PathVariable Long farmId) {
+    public Suggestion generate(long farmId) {
         return suggestionService.generateSuggestion(farmId);
     }
 
-    @GetMapping("/{id}")
-    public Suggestion getSuggestion(@PathVariable Long id) {
+    public Suggestion getSuggestion(long id) {
         return suggestionService.getSuggestionById(id);
     }
 
-    @GetMapping("/farm/{farmId}")
-    public List<Suggestion> getSuggestionsByFarm(@PathVariable Long farmId) {
+    public List<Suggestion> getSuggestionsByFarm(long farmId) {
         return suggestionService.getSuggestionsByFarm(farmId);
     }
 }

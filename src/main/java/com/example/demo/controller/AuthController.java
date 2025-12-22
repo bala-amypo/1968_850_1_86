@@ -5,34 +5,27 @@ import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/auth")
 public class AuthController {
 
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwt;
 
-    // ✅ REQUIRED by tests
-    public AuthController(UserService userService, JwtTokenProvider jwtTokenProvider) {
+    // MUST have this constructor
+    public AuthController(UserService userService, JwtTokenProvider jwt) {
         this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwt = jwt;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        return ResponseEntity.ok(userService.register(user));
+    public User register(RegisterRequest req) {
+        User user = userService.register(req);
+        user.setToken(jwt.createToken(user.getId(), user.getEmail(), user.getRole()));
+        return user;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody AuthRequest request) {
-        User user = userService.findByEmail(request.getEmail());
-        return ResponseEntity.ok(user);
+    public User login(AuthRequest req) {
+        User user = userService.login(req);
+        user.setToken(jwt.createToken(user.getId(), user.getEmail(), user.getRole()));
+        return user;
     }
 }
