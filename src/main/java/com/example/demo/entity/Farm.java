@@ -3,7 +3,6 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "farms")
 public class Farm {
 
     @Id
@@ -16,7 +15,6 @@ public class Farm {
     private String season;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User owner;
 
     public Farm() {}

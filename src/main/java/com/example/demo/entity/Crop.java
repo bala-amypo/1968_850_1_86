@@ -3,17 +3,19 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class Fertilizer {
+public class Crop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String npkRatio;
-    private String recommendedForCrops;
+    private Double suitablePHMin;
+    private Double suitablePHMax;
+    private Double requiredWater;
+    private String season;
 
-    public Fertilizer() {}
+    public Crop() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -21,11 +23,15 @@ public class Fertilizer {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getNpkRatio() { return npkRatio; }
-    public void setNpkRatio(String npkRatio) { this.npkRatio = npkRatio; }
+    public Double getSuitablePHMin() { return suitablePHMin; }
+    public void setSuitablePHMin(Double suitablePHMin) { this.suitablePHMin = suitablePHMin; }
 
-    public String getRecommendedForCrops() { return recommendedForCrops; }
-    public void setRecommendedForCrops(String recommendedForCrops) {
-        this.recommendedForCrops = recommendedForCrops;
-    }
+    public Double getSuitablePHMax() { return suitablePHMax; }
+    public void setSuitablePHMax(Double suitablePHMax) { this.suitablePHMax = suitablePHMax; }
+
+    public Double getRequiredWater() { return requiredWater; }
+    public void setRequiredWater(Double requiredWater) { this.requiredWater = requiredWater; }
+
+    public String getSeason() { return season; }
+    public void setSeason(String season) { this.season = season; }
 }
