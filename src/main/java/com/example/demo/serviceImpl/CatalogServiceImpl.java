@@ -34,4 +34,10 @@ public class CatalogServiceImpl implements CatalogService {
     public Crop addCrop(Crop crop) {
         return cropRepository.save(crop);
     }
+
+    // ADDED THIS METHOD TO FIX COMPILATION ERROR
+    @Override
+    public Fertilizer addFertilizer(Fertilizer fertilizer) {
+        return fertilizerRepository.save(fertilizer);
+    }
 }
