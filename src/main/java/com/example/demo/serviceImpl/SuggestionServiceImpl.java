@@ -16,16 +16,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class SuggestionServiceImpl implements SuggestionService {
+    
     private final SuggestionRepository suggestionRepository;
     private final FarmService farmService;
     private final CatalogService catalogService;
-
-    public SuggestionServiceImpl(SuggestionRepository suggestionRepository, FarmService farmService, CatalogService catalogService) {
+    
+    public SuggestionServiceImpl(SuggestionRepository suggestionRepository, 
+                                FarmService farmService, 
+                                CatalogService catalogService) {
         this.suggestionRepository = suggestionRepository;
         this.farmService = farmService;
         this.catalogService = catalogService;
     }
-
+    
     @Override
     public Suggestion generateSuggestion(Long farmId) {
         Farm farm = farmService.getFarmById(farmId);
@@ -42,7 +45,6 @@ public class SuggestionServiceImpl implements SuggestionService {
         String suggestedCrops = String.join(",", cropNames);
         String suggestedFertilizers = fertilizers.stream()
                 .map(Fertilizer::getName)
-                .distinct()
                 .collect(Collectors.joining(","));
         
         Suggestion suggestion = Suggestion.builder()
@@ -53,13 +55,13 @@ public class SuggestionServiceImpl implements SuggestionService {
         
         return suggestionRepository.save(suggestion);
     }
-
+    
     @Override
     public Suggestion getSuggestion(Long suggestionId) {
         return suggestionRepository.findById(suggestionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Suggestion not found"));
     }
-
+    
     @Override
     public List<Suggestion> getSuggestionsByFarm(Long farmId) {
         return suggestionRepository.findByFarmId(farmId);
