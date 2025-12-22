@@ -1,7 +1,9 @@
 package com.example.demo.entity;
 
 import com.example.demo.exception.BadRequestException;
-import jakarta.persistence.*;
+
+import javax.persistence.*;
+import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "fertilizers")
@@ -13,9 +15,11 @@ public class Fertilizer {
     private String name;
     private String npkRatio;
     private String recommendedForCrops;
-
+    
+    private static final Pattern NPK_PATTERN = Pattern.compile("^\\d+-\\d+-\\d+$");
+    
     public Fertilizer() {}
-
+    
     public Fertilizer(Long id, String name, String npkRatio, String recommendedForCrops) {
         this.id = id;
         this.name = name;
@@ -23,32 +27,43 @@ public class Fertilizer {
         this.recommendedForCrops = recommendedForCrops;
     }
     
+    public static FertilizerBuilder builder() {
+        return new FertilizerBuilder();
+    }
+    
     @PrePersist
     @PreUpdate
-    private void validateNpkRatio() {
-        if (npkRatio != null && !npkRatio.matches("\\d+-\\d+-\\d+")) {
+    private void validate() {
+        if (npkRatio != null && !NPK_PATTERN.matcher(npkRatio).matches()) {
             throw new BadRequestException("NPK");
         }
     }
-
+    
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+    
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    
     public String getNpkRatio() { return npkRatio; }
     public void setNpkRatio(String npkRatio) { this.npkRatio = npkRatio; }
+    
     public String getRecommendedForCrops() { return recommendedForCrops; }
     public void setRecommendedForCrops(String recommendedForCrops) { this.recommendedForCrops = recommendedForCrops; }
-
-    public static FertilizerBuilder builder() { return new FertilizerBuilder(); }
-
+    
     public static class FertilizerBuilder {
         private Long id;
-        private String name, npkRatio, recommendedForCrops;
+        private String name;
+        private String npkRatio;
+        private String recommendedForCrops;
+        
         public FertilizerBuilder id(Long id) { this.id = id; return this; }
         public FertilizerBuilder name(String name) { this.name = name; return this; }
         public FertilizerBuilder npkRatio(String npkRatio) { this.npkRatio = npkRatio; return this; }
         public FertilizerBuilder recommendedForCrops(String recommendedForCrops) { this.recommendedForCrops = recommendedForCrops; return this; }
-        public Fertilizer build() { return new Fertilizer(id, name, npkRatio, recommendedForCrops); }
+        
+        public Fertilizer build() {
+            return new Fertilizer(id, name, npkRatio, recommendedForCrops);
+        }
     }
 }
