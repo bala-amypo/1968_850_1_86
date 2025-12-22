@@ -1,10 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "users")
 public class User {
 
     @Id
@@ -12,19 +10,14 @@ public class User {
     private Long id;
 
     private String name;
-
-    @Column(unique = true)
     private String email;
-
     private String password;
     private String role;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Farm> farms;
+    @Transient
+    private String token;
 
-    public User() {}
-
-    // getters & setters
+    // ===== getters & setters =====
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -40,10 +33,10 @@ public class User {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-    public List<Farm> getFarms() { return farms; }
-    public void setFarms(List<Farm> farms) { this.farms = farms; }
+    public String getToken() { return token; }
+    public void setToken(String token) { this.token = token; }
 
-    // ===== BUILDER (REQUIRED BY TESTS) =====
+    // ===== Builder =====
     public static Builder builder() {
         return new Builder();
     }

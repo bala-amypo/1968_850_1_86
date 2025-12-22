@@ -1,25 +1,33 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.FarmRequest;
 import com.example.demo.entity.Farm;
 import com.example.demo.service.FarmService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/farms")
 public class FarmController {
 
     private final FarmService farmService;
 
-    // MUST be single-arg constructor
     public FarmController(FarmService farmService) {
         this.farmService = farmService;
     }
 
-    public Farm createFarm(FarmRequest req) {
-        return farmService.createFarm(req);
+    @PostMapping
+    public Farm createFarm(@RequestBody Farm farm) {
+        return farmService.createFarm(farm, farm.getOwnerId());
     }
 
-    public List<Farm> listFarms() {
-        return farmService.listFarms();
+    @GetMapping("/{id}")
+    public Farm getFarm(@PathVariable long id) {
+        return farmService.getFarmById(id);
+    }
+
+    @GetMapping("/owner/{ownerId}")
+    public List<Farm> listFarms(@PathVariable long ownerId) {
+        return farmService.getFarmsByOwner(ownerId);
     }
 }

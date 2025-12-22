@@ -3,7 +3,6 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "crops")
 public class Crop {
 
     @Id
@@ -11,47 +10,40 @@ public class Crop {
     private Long id;
 
     private String name;
-    private Double suitablePHMin;
-    private Double suitablePHMax;
-    private Double requiredWater;
+    private double minRainfall;
+    private double maxRainfall;
     private String season;
 
-    public Crop() {}
-
-    // getters & setters
+    // ===== getters & setters =====
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public Double getSuitablePHMin() { return suitablePHMin; }
-    public void setSuitablePHMin(Double suitablePHMin) { this.suitablePHMin = suitablePHMin; }
+    public double getMinRainfall() { return minRainfall; }
+    public void setMinRainfall(double minRainfall) { this.minRainfall = minRainfall; }
 
-    public Double getSuitablePHMax() { return suitablePHMax; }
-    public void setSuitablePHMax(Double suitablePHMax) { this.suitablePHMax = suitablePHMax; }
-
-    public Double getRequiredWater() { return requiredWater; }
-    public void setRequiredWater(Double requiredWater) { this.requiredWater = requiredWater; }
+    public double getMaxRainfall() { return maxRainfall; }
+    public void setMaxRainfall(double maxRainfall) { this.maxRainfall = maxRainfall; }
 
     public String getSeason() { return season; }
     public void setSeason(String season) { this.season = season; }
 
-    // ===== BUILDER =====
+    // ===== Builder =====
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder {
-        private final Crop c = new Crop();
+        private final Crop u = new Crop();
 
-        public Builder id(Long id) { c.setId(id); return this; }
-        public Builder name(String name) { c.setName(name); return this; }
-        public Builder suitablePHMin(Double v) { c.setSuitablePHMin(v); return this; }
-        public Builder suitablePHMax(Double v) { c.setSuitablePHMax(v); return this; }
-        public Builder requiredWater(Double v) { c.setRequiredWater(v); return this; }
-        public Builder season(String season) { c.setSeason(season); return this; }
+        public Builder id(Long id) { u.setId(id); return this; }
+        public Builder name(String name) { u.setName(name); return this; }
+        public Builder minRainfall(double v) { u.setMinRainfall(v); return this; }
+        public Builder maxRainfall(double v) { u.setMaxRainfall(v); return this; }
+        public Builder season(String s) { u.setSeason(s); return this; }
 
-        public Crop build() { return c; }
+        public Crop build() { return u; }
     }
 }
