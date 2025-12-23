@@ -7,8 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FarmRequest {
+
     private String name;
     private Double soilPH;
     private Double waterLevel;
     private String season;
+
+    private Long ownerId;   // ⭐ REQUIRED
 }
