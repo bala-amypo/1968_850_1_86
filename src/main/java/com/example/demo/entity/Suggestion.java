@@ -1,37 +1,45 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "suggestions")
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Suggestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "farm_id", nullable = false)
-    private Farm farm;
+    private Long farmId;
+    private String recommendedCrop;
+    private String recommendedFertilizer;
 
-    @Column(length = 1000)
-    private String suggestedCrops;
+    // ✅ GETTERS & SETTERS
 
-    @Column(length = 1000)
-    private String suggestedFertilizers;
+    public Long getId() {
+        return id;
+    }
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    public Long getFarmId() {
+        return farmId;
+    }
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    public void setFarmId(Long farmId) {
+        this.farmId = farmId;
+    }
+
+    public String getRecommendedCrop() {
+        return recommendedCrop;
+    }
+
+    public void setRecommendedCrop(String recommendedCrop) {
+        this.recommendedCrop = recommendedCrop;
+    }
+
+    public String getRecommendedFertilizer() {
+        return recommendedFertilizer;
+    }
+
+    public void setRecommendedFertilizer(String recommendedFertilizer) {
+        this.recommendedFertilizer = recommendedFertilizer;
     }
 }
