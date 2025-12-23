@@ -20,8 +20,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, password)
+    public User login(String name, String password) {
+        return userRepository.findByUsernameAndPassword(name, password)
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
     }
 }
