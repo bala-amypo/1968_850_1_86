@@ -1,33 +1,44 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.*;
-import com.example.demo.service.UserService;
-import lombok.RequiredArgsConstructor;
+import com.example.demo.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    private final UserRepository repo;
-    private final PasswordEncoder encoder;
-
-    public User register(User u) {
-        if (repo.findByEmail(u.getEmail()).isPresent())
+    @Override
+    public User register(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new BadRequestException("Email already exists");
-        u.setPassword(encoder.encode(u.getPassword()));
-        return repo.save(u);
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getRole() == null) user.setRole("USER");
+        return userRepository.save(user);
     }
 
+    @Override
     public User findByEmail(String email) {
-        return repo.findByEmail(email).orElse(null);
+        return userRepository.findByEmail(email).orElse(null);
     }
 
+    @Override
     public User findById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new BadRequestException("User not found"));
+        return userRepository.findById(id).orElseThrow(() -> 
+            new BadRequestException("User not found"));
     }
 }
