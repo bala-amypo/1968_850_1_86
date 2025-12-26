@@ -1,62 +1,27 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.Crop;
-import com.example.demo.entity.Fertilizer;
-import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.CropRepository;
-import com.example.demo.repository.FertilizerRepository;
-import com.example.demo.util.ValidationUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.CatalogService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CatalogServiceImpl implements CatalogService {
-    
-    @Autowired
-    private CropRepository cropRepository;
-    
-    @Autowired
-    private FertilizerRepository fertilizerRepository;
-    
-    public CatalogServiceImpl(CropRepository cropRepository, FertilizerRepository fertilizerRepository) {
+
+    private final CropRepository cropRepository;
+
+    public CatalogServiceImpl(CropRepository cropRepository) {
         this.cropRepository = cropRepository;
-        this.fertilizerRepository = fertilizerRepository;
     }
 
     @Override
-    public Crop addCrop(Crop crop) {
-        if (crop.getSuitablePHMin() > crop.getSuitablePHMax()) {
-            throw new BadRequestException("PH min cannot be greater than PH max");
-        }
-        if (!ValidationUtil.validSeason(crop.getSeason())) {
-            throw new BadRequestException("Invalid season");
-        }
-        return cropRepository.save(crop);
-    }
-
-    @Override
-    public Fertilizer addFertilizer(Fertilizer fertilizer) {
-        if (!fertilizer.getNpkRatio().matches("\\d+-\\d+-\\d+")) {
-            throw new BadRequestException("Invalid NPK ratio format");
-        }
-        return fertilizerRepository.save(fertilizer);
-    }
-
-    @Override
-    public List<Crop> findSuitableCrops(Double ph, Double waterLevel, String season) {
-        return cropRepository.findSuitableCrops(ph, season).stream()
-            .filter(crop -> crop.getRequiredWater() <= waterLevel)
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Fertilizer> findFertilizersForCrops(List<String> cropNames) {
-        if (cropNames.isEmpty()) return List.of();
-        return cropNames.stream()
-            .flatMap(cropName -> fertilizerRepository.findByCropName(cropName).stream())
-            .distinct()
-            .collect(Collectors.toList());
+    public List<Crop> findSuitableCrops(Double ph, Double water, String season) {
+        return cropRepository.findAll().stream()
+                .filter(c -> c.getSuitablePHMin() <= ph)
+                .filter(c -> c.getSuitablePHMax() >= ph)
+                .filter(c -> c.getSeason().equalsIgnoreCase(season))
+                .toList();
     }
 }

@@ -2,18 +2,24 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Crop {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String email;
-    private String password;
-    private String role;
+
+    private Double suitablePHMin;
+    private Double suitablePHMax;
+
+    private Double requiredWater;
+
+    private String season;
 }
