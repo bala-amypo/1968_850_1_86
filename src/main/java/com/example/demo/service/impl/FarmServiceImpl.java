@@ -1,11 +1,13 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.exception.*;
-import com.example.demo.repository.*;
+import com.example.demo.entity.Farm;
+import com.example.demo.repository.FarmRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FarmService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FarmServiceImpl implements FarmService {
@@ -30,7 +32,7 @@ public class FarmServiceImpl implements FarmService {
     }
 
     @Override
-    public List<Farm> getFarmsByOwner(Long userId) {
+    public List<Farm> getFarmsByOwner(Long ownerId) {
         return farmRepo.findAll();
     }
 }
