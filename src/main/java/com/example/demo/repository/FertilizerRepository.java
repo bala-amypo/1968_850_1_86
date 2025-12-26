@@ -1,17 +1,9 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.Fertilizer;
+import com.example.demo.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import java.util.List;
+import java.util.*;
 
 public interface FertilizerRepository extends JpaRepository<Fertilizer, Long> {
-
-    @Query("""
-        SELECT f FROM Fertilizer f
-        WHERE f.recommendedForCrops = :crop
-    """)
-    List<Fertilizer> findByCropName(@Param("crop") String crop);
+    List<Fertilizer> findByCropName(String crop);
 }

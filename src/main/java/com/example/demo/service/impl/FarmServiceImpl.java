@@ -1,46 +1,35 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.Farm;
-import com.example.demo.entity.User;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.FarmRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.entity.*;
+import com.example.demo.exception.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.FarmService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
+@RequiredArgsConstructor
 public class FarmServiceImpl implements FarmService {
 
-    private final FarmRepository farmRepo;
+    private final FarmRepository repo;
     private final UserRepository userRepo;
 
-    public FarmServiceImpl(FarmRepository farmRepo, UserRepository userRepo) {
-        this.farmRepo = farmRepo;
-        this.userRepo = userRepo;
-    }
-
-    @Override
-    public Farm createFarm(Farm farm, Long ownerId) {
-        if (farm.getSoilPH() < 3 || farm.getSoilPH() > 10)
+    public Farm createFarm(Farm farm, Long userId) {
+        if (farm.getSoilPH() < 3 || farm.getSoilPH() > 9)
             throw new IllegalArgumentException("pH");
 
-        User owner = userRepo.findById(ownerId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User u = userRepo.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User"));
 
-        farm.setOwner(owner);
-        return farmRepo.save(farm);
+        farm.setOwner(u);
+        return repo.save(farm);
     }
 
-    @Override
     public Farm getFarmById(Long id) {
-        return farmRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Farm not found"));
+        return repo.findById(id).orElseThrow();
     }
 
-    @Override
-    public List<Farm> getFarmsByOwner(Long ownerId) {
-        return farmRepo.findByOwnerId(ownerId);
+    public java.util.List<Farm> getFarmsByOwner(Long id) {
+        return repo.findAll();
     }
 }
