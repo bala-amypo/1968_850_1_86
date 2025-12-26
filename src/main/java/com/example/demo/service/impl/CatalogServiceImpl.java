@@ -10,31 +10,29 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CatalogServiceImpl implements CatalogService {
 
     private final CropRepository cropRepo;
     private final FertilizerRepository fertRepo;
 
+    public CatalogServiceImpl(CropRepository c, FertilizerRepository f) {
+        this.cropRepo = c;
+        this.fertRepo = f;
+    }
+
     public Crop addCrop(Crop c) {
-        if (c.getSuitablePHMin() > c.getSuitablePHMax())
-            throw new BadRequestException("PH min");
-        if (!List.of("Kharif", "Rabi").contains(c.getSeason()))
-            throw new BadRequestException("Invalid season");
         return cropRepo.save(c);
     }
 
     public Fertilizer addFertilizer(Fertilizer f) {
-        if (!f.getNpkRatio().matches("\\d+-\\d+-\\d+"))
-            throw new BadRequestException("NPK");
         return fertRepo.save(f);
     }
 
-    public List<Crop> findSuitableCrops(Double ph, Double water, String season) {
+    public List<Crop> findSuitableCrops(double ph, double water, String season) {
         return cropRepo.findSuitableCrops(ph, season);
     }
 
-    public List<Fertilizer> findFertilizersForCrops(java.util.List<String> crops) {
+    public List<Fertilizer> findFertilizersForCrops(List<String> crops) {
         return fertRepo.findByCropName(crops.get(0));
     }
 }

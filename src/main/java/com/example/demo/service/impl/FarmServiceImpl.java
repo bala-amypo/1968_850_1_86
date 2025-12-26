@@ -8,28 +8,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class FarmServiceImpl implements FarmService {
 
-    private final FarmRepository repo;
+    private final FarmRepository farmRepo;
     private final UserRepository userRepo;
 
+    public FarmServiceImpl(FarmRepository farmRepo, UserRepository userRepo) {
+        this.farmRepo = farmRepo;
+        this.userRepo = userRepo;
+    }
+
+    @Override
     public Farm createFarm(Farm farm, Long userId) {
-        if (farm.getSoilPH() < 3 || farm.getSoilPH() > 9)
-            throw new IllegalArgumentException("pH");
-
-        User u = userRepo.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User"));
-
-        farm.setOwner(u);
-        return repo.save(farm);
+        farm.setOwner(userRepo.findById(userId).orElseThrow());
+        return farmRepo.save(farm);
     }
 
+    @Override
     public Farm getFarmById(Long id) {
-        return repo.findById(id).orElseThrow();
+        return farmRepo.findById(id).orElseThrow();
     }
 
-    public java.util.List<Farm> getFarmsByOwner(Long id) {
-        return repo.findAll();
+    @Override
+    public List<Farm> getFarmsByOwner(Long userId) {
+        return farmRepo.findAll();
     }
 }
