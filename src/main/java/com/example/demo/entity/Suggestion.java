@@ -6,22 +6,22 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Suggestion {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @ManyToOne
+    @JoinColumn(name = "farm_id")
+    private Farm farm;
+    
     private String suggestedCrops;
     private String suggestedFertilizers;
-
-    @ManyToOne
-    private Farm farm;
-
     private LocalDateTime createdAt;
-
+    
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
