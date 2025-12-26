@@ -2,26 +2,30 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Suggestion;
 import com.example.demo.service.SuggestionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/suggestions")
+@RequestMapping("/api/suggestions")
 public class SuggestionController {
-
-    private final SuggestionService service;
-
-    public SuggestionController(SuggestionService service) {
-        this.service = service;
+    
+    @Autowired
+    private SuggestionService suggestionService;
+    
+    public SuggestionController(SuggestionService suggestionService) {
+        this.suggestionService = suggestionService;
     }
 
-    @PostMapping("/{farmId}")
+    @PostMapping("/generate/{farmId}")
     public ResponseEntity<Suggestion> generate(@PathVariable Long farmId) {
-        return ResponseEntity.ok(service.generateSuggestion(farmId));
+        Suggestion suggestion = suggestionService.generateSuggestion(farmId);
+        return ResponseEntity.ok(suggestion);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Suggestion> getSuggestion(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getSuggestion(id));
+        Suggestion suggestion = suggestionService.getSuggestion(id);
+        return ResponseEntity.ok(suggestion);
     }
 }
