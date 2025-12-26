@@ -1,14 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -23,29 +21,22 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-
-        return ResponseEntity.ok(userService.register(user));
+    public ResponseEntity<?> register(@RequestBody User user) {
+        User saved = userService.register(user);
+        return ResponseEntity.ok(saved);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         User user = userService.findByEmail(request.getEmail());
-
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (user == null || !new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder()
+                .matches(request.getPassword(), user.getPassword())) {
             return ResponseEntity.status(401).build();
         }
 
         String token = jwtTokenProvider.createToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
+                user.getId(), user.getEmail(), user.getRole());
 
-        return ResponseEntity.ok(Map.of("token", token));
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }

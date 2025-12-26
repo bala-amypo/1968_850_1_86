@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.Farm;
 import com.example.demo.service.FarmService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,17 +19,14 @@ public class FarmController {
     }
 
     @PostMapping
-    public ResponseEntity<Farm> createFarm(@RequestBody Farm farm) {
-        return ResponseEntity.ok(farmService.createFarm(farm, 1L));
+    public ResponseEntity<Farm> createFarm(@RequestBody Farm farm, Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        return ResponseEntity.ok(farmService.createFarm(farm, userId));
     }
 
     @GetMapping
-    public ResponseEntity<List<Farm>> getFarms() {
-        return ResponseEntity.ok(farmService.getFarmsByOwner(1L));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Farm> getFarm(@PathVariable Long id) {
-        return ResponseEntity.ok(farmService.getFarmById(id));
+    public ResponseEntity<List<Farm>> getFarms(Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        return ResponseEntity.ok(farmService.getFarmsByOwner(userId));
     }
 }

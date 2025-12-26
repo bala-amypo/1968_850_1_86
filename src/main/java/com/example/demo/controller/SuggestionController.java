@@ -21,7 +21,7 @@ public class SuggestionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Suggestion> get(@PathVariable Long id) {
+    public ResponseEntity<Suggestion> getSuggestion(@PathVariable Long id) {
         return ResponseEntity.ok(service.getSuggestion(id));
     }
 }
