@@ -1,14 +1,14 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.*;
-import org.springframework.stereotype.Component;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.util.Date;
 
-@Component
 public class JwtTokenProvider {
 
-    private final String SECRET = "secret-key";
+    private static final String SECRET = "secret-key";
 
     public String createToken(Long userId, String email, String role) {
         return Jwts.builder()
