@@ -1,10 +1,10 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.*;
+import com.example.demo.entity.Crop;
+import com.example.demo.entity.Fertilizer;
+import com.example.demo.repository.CropRepository;
+import com.example.demo.repository.FertilizerRepository;
 import com.example.demo.service.CatalogService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,27 +12,32 @@ import java.util.List;
 @Service
 public class CatalogServiceImpl implements CatalogService {
 
-    private final CropRepository cropRepo;
-    private final FertilizerRepository fertRepo;
+    private final CropRepository cropRepository;
+    private final FertilizerRepository fertilizerRepository;
 
-    public CatalogServiceImpl(CropRepository c, FertilizerRepository f) {
-        this.cropRepo = c;
-        this.fertRepo = f;
+    public CatalogServiceImpl(CropRepository cropRepository,
+                              FertilizerRepository fertilizerRepository) {
+        this.cropRepository = cropRepository;
+        this.fertilizerRepository = fertilizerRepository;
     }
 
-    public Crop addCrop(Crop c) {
-        return cropRepo.save(c);
+    @Override
+    public Crop addCrop(Crop crop) {
+        return cropRepository.save(crop);
     }
 
-    public Fertilizer addFertilizer(Fertilizer f) {
-        return fertRepo.save(f);
+    @Override
+    public Fertilizer addFertilizer(Fertilizer fertilizer) {
+        return fertilizerRepository.save(fertilizer);
     }
 
-    public List<Crop> findSuitableCrops(double ph, double water, String season) {
-        return cropRepo.findSuitableCrops(ph, season);
+    @Override
+    public List<Crop> findSuitableCrops(Double ph, Double water, String season) {
+        return cropRepository.findSuitableCrops(ph, season);
     }
 
+    @Override
     public List<Fertilizer> findFertilizersForCrops(List<String> crops) {
-        return fertRepo.findByCropName(crops.get(0));
+        return fertilizerRepository.findByCropName(crops.get(0));
     }
 }
