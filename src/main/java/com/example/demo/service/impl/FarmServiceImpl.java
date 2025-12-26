@@ -1,33 +1,46 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Farm;
+import com.example.demo.entity.User;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.FarmRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FarmService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FarmServiceImpl implements FarmService {
 
-    private final FarmRepository farmRepository;
+    private final FarmRepository farmRepo;
+    private final UserRepository userRepo;
 
-    public FarmServiceImpl(FarmRepository farmRepository) {
-        this.farmRepository = farmRepository;
+    public FarmServiceImpl(FarmRepository farmRepo, UserRepository userRepo) {
+        this.farmRepo = farmRepo;
+        this.userRepo = userRepo;
     }
 
     @Override
-    public Farm saveFarm(Farm farm) {
+    public Farm createFarm(Farm farm, Long ownerId) {
+        if (farm.getSoilPH() < 3 || farm.getSoilPH() > 10)
+            throw new IllegalArgumentException("pH");
 
-        // 🔥 THIS CHECK PREVENTS 500 ERROR
-        if (farm.getOwner() == null) {
-            throw new RuntimeException("Owner cannot be null. Pass valid ownerId.");
-        }
+        User owner = userRepo.findById(ownerId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return farmRepository.save(farm);
+        farm.setOwner(owner);
+        return farmRepo.save(farm);
     }
 
     @Override
-    public Farm getFarm(Long id) {
-        return farmRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Farm not found with id: " + id));
+    public Farm getFarmById(Long id) {
+        return farmRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Farm not found"));
+    }
+
+    @Override
+    public List<Farm> getFarmsByOwner(Long ownerId) {
+        return farmRepo.findByOwnerId(ownerId);
     }
 }

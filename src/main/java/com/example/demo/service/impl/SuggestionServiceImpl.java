@@ -1,34 +1,52 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.Farm;
-import com.example.demo.entity.Suggestion;
-import com.example.demo.repository.FarmRepository;
+import com.example.demo.entity.*;
 import com.example.demo.repository.SuggestionRepository;
+import com.example.demo.service.CatalogService;
+import com.example.demo.service.FarmService;
 import com.example.demo.service.SuggestionService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SuggestionServiceImpl implements SuggestionService {
 
-    private final FarmRepository farmRepository;
-    private final SuggestionRepository suggestionRepository;
+    private final FarmService farmService;
+    private final CatalogService catalogService;
+    private final SuggestionRepository repo;
 
-    public SuggestionServiceImpl(FarmRepository farmRepository,
-                                 SuggestionRepository suggestionRepository) {
-        this.farmRepository = farmRepository;
-        this.suggestionRepository = suggestionRepository;
+    public SuggestionServiceImpl(FarmService farmService,
+                                 CatalogService catalogService,
+                                 SuggestionRepository repo) {
+        this.farmService = farmService;
+        this.catalogService = catalogService;
+        this.repo = repo;
     }
 
     @Override
     public Suggestion generateSuggestion(Long farmId) {
-        Farm farm = farmRepository.findById(farmId)
-                .orElseThrow(() -> new RuntimeException("Farm not found"));
+        var farm = farmService.getFarmById(farmId);
 
-        Suggestion suggestion = new Suggestion();
-        suggestion.setFarmId(farmId);
-        suggestion.setRecommendedCrop("Rice");
-        suggestion.setRecommendedFertilizer("Urea");
+        var crops = catalogService.findSuitableCrops(
+                farm.getSoilPH(), farm.getWaterLevel(), farm.getSeason());
 
-        return suggestionRepository.save(suggestion);
+        var fertilizers = catalogService.findFertilizersForCrops(
+                crops.stream().map(Crop::getName).toList());
+
+        Suggestion s = new Suggestion();
+        s.setFarm(farm);
+        s.setSuggestedCrops(
+                crops.stream().map(Crop::getName).collect(java.util.stream.Collectors.joining(",")));
+        s.setSuggestedFertilizers(
+                fertilizers.stream().map(Fertilizer::getName).collect(java.util.stream.Collectors.joining(",")));
+
+        return repo.save(s);
+    }
+
+    @Override
+    public Suggestion getSuggestion(Long id) {
+        return repo.findById(id).orElseThrow();
     }
 }
