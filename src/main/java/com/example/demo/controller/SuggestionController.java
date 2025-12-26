@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/suggestions")
 public class SuggestionController {
 
-    private final SuggestionService suggestionService;
+    private final SuggestionService service;
 
-    public SuggestionController(SuggestionService suggestionService) {
-        this.suggestionService = suggestionService;
+    public SuggestionController(SuggestionService service) {
+        this.service = service;
     }
 
     @PostMapping("/{farmId}")
     public ResponseEntity<Suggestion> generate(@PathVariable Long farmId) {
-        return ResponseEntity.ok(suggestionService.generateSuggestion(farmId));
+        return ResponseEntity.ok(service.generateSuggestion(farmId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Suggestion> getSuggestion(@PathVariable Long id) {
-        return ResponseEntity.ok(suggestionService.getSuggestion(id));
+    public ResponseEntity<Suggestion> get(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getSuggestion(id));
     }
 }

@@ -8,8 +8,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private final String SECRET = "mySecretKey123";
-    private final long EXPIRATION = 86400000; // 1 day
+    private final String SECRET = "secret-key";
 
     public String createToken(Long userId, String email, String role) {
         return Jwts.builder()
@@ -17,7 +16,7 @@ public class JwtTokenProvider {
                 .claim("id", userId)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
     }
@@ -32,15 +31,6 @@ public class JwtTokenProvider {
 
     public String getRole(String token) {
         return getClaims(token).get("role", String.class);
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            getClaims(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     private Claims getClaims(String token) {

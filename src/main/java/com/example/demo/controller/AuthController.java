@@ -8,6 +8,8 @@ import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -27,16 +29,14 @@ public class AuthController {
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
 
-        User saved = userService.register(user);
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.ok(userService.register(user));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         User user = userService.findByEmail(request.getEmail());
 
-        if (!new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder()
-                .matches(request.getPassword(), user.getPassword())) {
+        if (!user.getPassword().equals(request.getPassword())) {
             return ResponseEntity.status(401).build();
         }
 
@@ -46,8 +46,6 @@ public class AuthController {
                 user.getRole()
         );
 
-        return ResponseEntity.ok(
-                java.util.Map.of("token", token)
-        );
+        return ResponseEntity.ok(Map.of("token", token));
     }
 }

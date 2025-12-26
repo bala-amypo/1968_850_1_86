@@ -1,50 +1,42 @@
 package com.example.demo.security;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
+import io.jsonwebtoken.*;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.List;
+import java.util.Date;
 
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+@Component
+public class JwtTokenProvider {
 
-    private final JwtTokenProvider tokenProvider;
+    private final String SECRET = "secret-key";
 
-    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
+    public String createToken(Long userId, String email, String role) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("id", userId)
+                .claim("role", role)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .compact();
     }
 
-    @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+    public String getEmail(String token) {
+        return getClaims(token).getSubject();
+    }
 
-        String header = request.getHeader("Authorization");
+    public Long getUserId(String token) {
+        return getClaims(token).get("id", Long.class);
+    }
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+    public String getRole(String token) {
+        return getClaims(token).get("role", String.class);
+    }
 
-            if (tokenProvider.validateToken(token)) {
-                String role = tokenProvider.getRole(token);
-
-                var auth = new UsernamePasswordAuthenticationToken(
-                        tokenProvider.getUserId(token),
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_" + role))
-                );
-
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
-        }
-
-        filterChain.doFilter(request, response);
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET)
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
