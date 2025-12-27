@@ -17,15 +17,17 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // REGISTER
     @PostMapping("/register")
     public User register(@RequestBody RegisterRequest request) {
-        return userService.register(request);
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        return userService.register(user);
     }
 
-    // LOGIN
     @PostMapping("/login")
     public User login(@RequestBody AuthRequest request) {
-        return userService.login(request);
+        return userService.login(request.getEmail(), request.getPassword());
     }
 }
