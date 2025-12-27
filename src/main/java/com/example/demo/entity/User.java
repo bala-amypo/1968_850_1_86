@@ -8,7 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Crop {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,10 +17,9 @@ public class Crop {
 
     private String name;
 
-    private Double suitablePHMin;
-    private Double suitablePHMax;
+    private String email;
 
-    private Double requiredWater;
+    private String password;
 
-    private String season;
+    private String role;
 }
